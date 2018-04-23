@@ -138,32 +138,33 @@ public class GUIInterface implements ActionListener {
 			addToSelection(button.getText());
 			itemSelect.setText(currentSelection);
 			mainFrame.validate();
-		}
-		if (event.getSource() instanceof JButton) {
+		} else if (event.getSource() instanceof JButton) {
 			JButton button = (JButton)event.getSource();
 			if (button.getText().equalsIgnoreCase("Vend!")) {
 				vm.insertMoney(money);
-				displayResult(vm.vend(currentSelection), vm.getItem(vm.idToIndex(currentSelection)));
-				money = vm.dispenseChange();
-				populateMenu();
-				moneyRemaining.setText(money.toString());
-				mainFrame.validate();
-			}
-			if (button.getText().equalsIgnoreCase("Add Money")) {
+				if (!vm.containsID(vm.getItems(), currentSelection)) {
+					displayResult(vm.vend(currentSelection));
+					vm.dispenseChange();
+				} else {
+					displayResult(vm.vend(currentSelection), vm.getItem(vm.idToIndex(currentSelection)));
+					money = vm.dispenseChange();
+					populateMenu();
+					moneyRemaining.setText(money.toString());
+					mainFrame.validate();
+				}
+			} else if (button.getText().equalsIgnoreCase("Add Money")) {
 				BigDecimal addMoney = waitForMoney();
 				money = money.add(addMoney);
 				moneyRemaining.setText(money + "");
 				mainFrame.validate();
-			}
-			if (button.getText().equalsIgnoreCase("Get Change")) {
+			} else {
 				JOptionPane.showMessageDialog(mainFrame, "Your change is $" + money, "Thank you!", JOptionPane.PLAIN_MESSAGE);
 				mainFrame.dispose();
 				this.initialize();
 				
 			}
 			
-		}
-		if (event.getSource() instanceof JTextField) {
+		} else {
 			JTextField field = (JTextField)event.getSource();
 			int result = searchForItem(field.getText());
 			if (result == -1) {
@@ -274,6 +275,24 @@ public class GUIInterface implements ActionListener {
 		if (result == TransactionResult.SUCCESS) {
 		JOptionPane.showMessageDialog(mainFrame, "Transaction completed successfully! You bought " + item.description() + " for $" + item.price() + ".", "Success!", JOptionPane.PLAIN_MESSAGE);
 		} else if (result == TransactionResult.INVALID_ITEM) {
+			JOptionPane.showMessageDialog(mainFrame, "Error! Invalid item!", "Error!", JOptionPane.ERROR_MESSAGE);
+		} else if (result == TransactionResult.INSUFFICIENT_FUNDS) {
+			JOptionPane.showMessageDialog(mainFrame, "Error! You have insufficient funds to purchase this item!\nPlease select another item or add more money!", "Error!", JOptionPane.ERROR_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(mainFrame, "Error! This item is out of stock!", "Error!", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	/***********************************
+	 * This method displays a message
+	 * dialog with different information
+	 * depending on the result of the
+	 * transaction.
+	 * @param TransactionResult
+	 ***********************************/
+	
+	public void displayResult(TransactionResult result) {
+		if (result == TransactionResult.INVALID_ITEM) {
 			JOptionPane.showMessageDialog(mainFrame, "Error! Invalid item!", "Error!", JOptionPane.ERROR_MESSAGE);
 		} else if (result == TransactionResult.INSUFFICIENT_FUNDS) {
 			JOptionPane.showMessageDialog(mainFrame, "Error! You have insufficient funds to purchase this item!\nPlease select another item or add more money!", "Error!", JOptionPane.ERROR_MESSAGE);
