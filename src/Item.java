@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 
 /***********************************
  * This class represents an item
@@ -9,7 +10,7 @@
 
 public class Item {
 	private String description;
-	private double price;
+	private BigDecimal price;
 	private int quantity;
 	private String identifier;
 	
@@ -17,12 +18,12 @@ public class Item {
 	 * This is the constructor
 	 * for each item.
 	 * @param String
-	 * @param double
+	 * @param BigDecimal
 	 * @param int
 	 * @param String
 	 *****************************/
 	
-	public Item(String itemDescription, double itemPrice, int itemQuantity, String identifier) {
+	public Item(String itemDescription, BigDecimal itemPrice, int itemQuantity, String identifier) {
 		this.description = itemDescription;
 		this.price = itemPrice;
 		this.quantity = itemQuantity;
@@ -44,10 +45,10 @@ public class Item {
 	 * This is a getter method
 	 * that returns the price
 	 * of this item.
-	 * @return double
+	 * @return BigDecimal
 	 ******************************/
 	
-	public double price() {
+	public BigDecimal price() {
 		return this.price;
 	}
 	

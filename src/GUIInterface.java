@@ -143,7 +143,7 @@ public class GUIInterface implements ActionListener {
 			JButton button = (JButton)event.getSource();
 			if (button.getText().equalsIgnoreCase("Vend!")) {
 				vm.insertMoney(money);
-				displayResult(vm.vend(currentSelection));
+				displayResult(vm.vend(currentSelection), vm.getItem(vm.idToIndex(currentSelection)));
 				money = vm.dispenseChange();
 				populateMenu();
 				moneyRemaining.setText(money.toString());
@@ -270,9 +270,9 @@ public class GUIInterface implements ActionListener {
 	 * @param TransactionResult
 	 ***********************************/
 	
-	public void displayResult(TransactionResult result) {
+	public void displayResult(TransactionResult result, Item item) {
 		if (result == TransactionResult.SUCCESS) {
-		JOptionPane.showMessageDialog(mainFrame, "Transaction completed successfully!", "Success!", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(mainFrame, "Transaction completed successfully! You bought " + item.description() + " for $" + item.price() + ".", "Success!", JOptionPane.PLAIN_MESSAGE);
 		} else if (result == TransactionResult.INVALID_ITEM) {
 			JOptionPane.showMessageDialog(mainFrame, "Error! Invalid item!", "Error!", JOptionPane.ERROR_MESSAGE);
 		} else if (result == TransactionResult.INSUFFICIENT_FUNDS) {
@@ -384,7 +384,7 @@ public class GUIInterface implements ActionListener {
 				tokens = data.split(",");
 				identifier = Character.toString(letter) + value;
 				try {
-					stock.add(new Item(tokens[0], Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), identifier));
+					stock.add(new Item(tokens[0], new BigDecimal((tokens[1])).setScale(2, RoundingMode.DOWN), Integer.parseInt(tokens[2]), identifier));
 					line++;
 				} catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
 					System.err.println("Bad item in file " + filename + 

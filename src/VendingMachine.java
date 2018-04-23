@@ -56,7 +56,7 @@ public class VendingMachine {
     
 	  final Item item = this.items.get(idToIndex(itemId));
     
-	  if (new BigDecimal(item.price()).compareTo(this.money) > 0) {
+	  if ((item.price()).compareTo(this.money) > 0) {
 		  return TransactionResult.INSUFFICIENT_FUNDS;
 	  }
     
@@ -65,8 +65,8 @@ public class VendingMachine {
 	  }
     
 	  item.updateQuantity(-1);
-	  this.money = this.money.subtract(new BigDecimal(item.price()));
-	  this.revenue = this.revenue.add(new BigDecimal(item.price()));
+	  this.money = this.money.subtract(item.price());
+	  this.revenue = this.revenue.add((item.price()));
 	  return TransactionResult.SUCCESS;
   	}
 
@@ -143,5 +143,17 @@ public class VendingMachine {
   
   public ArrayList<Item> getItems() {
 	  return this.items;
+  }
+  
+  /**********************************
+   * This is a getter method that 
+   * returns the item at the 
+   * proper index.
+   * @param int
+   * @return Item
+   */
+  
+  public Item getItem(int index) {
+	  return this.items.get(index);
   }
 }
